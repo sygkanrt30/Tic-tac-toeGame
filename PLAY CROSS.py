@@ -1,66 +1,73 @@
 import time
 
-field = list(range(1, 10))
 
-
-def d_field(field):
+def make_field(field):
     """Создаёт поле и выводит его в консоль"""
-    print("*" * 1, "Игра Крестики-нолики(размер поля 3х3,стандартное)", "*" * 1)
     print("*************")
     for i in range(3):
         print("|", field[0 + i * 3], "|", field[1 + i * 3], "|", field[2 + i * 3], "|")
         print("*************")
 
 
-def start_game(token):
-    """Принимает данные, которые ввёл игрок"""
-    st = False
-    while not st:
-        player_ans = int(input("Куда поставим " + token + "? "))
-        if 1 <= player_ans <= 9:
-            if str(field[player_ans - 1]) not in "XO":
-                field[player_ans - 1] = token
-                st = True
+def start_game(char, field):
+    """Принимает данные, которые ввёл игроки"""
+    while True:
+        position = int(input("Куда поставим " + char + "? "))
+        if 1 <= position <= 9:
+            if str(field[position - 1]) not in "XO":
+                field[position - 1] = char
+                break
             else:
                 print("Эта позиция уже занята.")
         else:
             print("Некорректный ввод!!! Что бы походить нужно ввести число от 1 до 9.")
 
 
-def win_or_not(field):
+def check_win(field):
     """Проверяет выигрыш"""
-    w_cd = ((0, 1, 2), (0, 3, 6), (3, 4, 5), (1, 4, 7), (2, 4, 6), (6, 7, 8), (0, 4, 8), (2, 5, 8))
-    for x in w_cd:
+    win_combinations = ((0, 1, 2), (0, 3, 6), (3, 4, 5), (1, 4, 7), (2, 4, 6), (6, 7, 8), (0, 4, 8), (2, 5, 8))
+    for x in win_combinations:
         if field[x[0]] == field[x[1]] == field[x[2]]:
             return field[x[0]]
     return False
 
 
-def game(field):
+def secundomer(f):
+    def wrapper():
+        start = time.time()
+        f()
+        end = time.time()
+        print(f'Время: {round(end - start, 1)} сек длилась партия')
+
+    return wrapper
+
+
+@secundomer
+def main():
     """Процесс игры"""
+    print("*" * 1, "Игра Крестики-нолики(размер поля 3х3,стандартное)", "*" * 1)
+    field = list(range(1, 10))
     cnt = 0
-    w = False
-    while not w:
-        d_field(field)
+    while True:
+        make_field(field)
         if cnt % 2 == 0:
-            start_game("X")
+            start_game("X", field)
         else:
-            start_game("O")
+            start_game("O", field)
         cnt += 1
-        if cnt > 4:
-            tp = win_or_not(field)
-            if tp:
-                print(tp, "Вы выиграли!")
-                w = True
-                break
         if cnt == 9:
             print("Ничья!")
             break
-    d_field(field)
+        elif 4 < cnt < 9:
+            char = check_win(field)
+            if char == 'X':
+                print("Выиграл первый игрок!!!")
+                break
+            elif char == 'O':
+                print("Выиграл второй игрок!!!")
+                break
+    make_field(field)
 
 
-a = time.time()
-game(field)
-b = time.time()
-print(b - a)
-input("Нажмите Enter для выхода")
+if __name__ == '__main__':
+    main()

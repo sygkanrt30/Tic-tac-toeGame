@@ -1,12 +1,12 @@
 import turtle
 
 pen = turtle.Turtle()
-pen.speed(10000000000)
+pen.speed(10**1000)
 pen.color("red")
 a = 20
 
 
-def sqard():
+def squard():
     for i in range(4):
         pen.forward(a)
         pen.left(90)
@@ -14,13 +14,13 @@ def sqard():
 
 def love():
     for i in range(75):
-        sqard()
+        squard()
         pen.left(2)
         global a
         a = a + 2.5
 
     for i in range(75):
-        sqard()
+        squard()
         pen.left(2)
         a = a - 2.5
 
